@@ -42,17 +42,8 @@ public class RuleGeneratorAlgorihtmJ48 extends RuleGeneratorAlgorihtm {
 	@Override
 	public boolean generateRules() {		
 		try { 
-            // Load dataset 
-            ArffLoader loader = new ArffLoader(); 
-            loader.setSource(new File(this.trainDataSetFileName));
-            Instances data = loader.getDataSet(); 
-            
-            if (this.classIndex != -1) {
-                data.setClassIndex(this.classIndex);
-            }else {
-                // Set the last attribute as the class            
-                data.setClassIndex(data.numAttributes() - 1);
-            }
+           
+			this.loadArffDataset();
  
             // Build the decision tree classifier 
             J48 tree = new J48(); 
@@ -80,11 +71,6 @@ public class RuleGeneratorAlgorihtmJ48 extends RuleGeneratorAlgorihtm {
             List<Float[]> ruleMetrics = new LinkedList<Float[]>();
             
             processTree(treeV, 3, "", attNames, ruleList, ruleMetrics);
-            //System.out.println(treeV[4]);
-            
-            //addRuleToList(", node-caps=yes, |deg-malig=1:recurrence-events(1.01/0.4)", ruleList, attNames);
-            
-
             
             for (String rr[]: ruleList)
             	System.out.println(Arrays.toString(rr));
@@ -110,32 +96,7 @@ public class RuleGeneratorAlgorihtmJ48 extends RuleGeneratorAlgorihtm {
             }            
             fw.close();
             
-            // datasetMetrics
-            fw = new FileWriter(new File(this.outputPrefixFileName + "." + this.datasetMetricFileExtension));            
-            AttributeStats classStats = data.attributeStats(data.classIndex());
-            fw.append("nsamples:" + classStats.intCount + "\n");
-            fw.append("nclasses:" + classStats.distinctCount + "\n");
-            
-            
-            // class distribution
-            Map<String, Integer> values = new HashMap<>();
-            for (int i = 0; i < classStats.intCount; i++) {
-            	String value = data.instance(i).stringValue(data.classIndex());
-            	if (!values.containsKey(value)) {
-            		values.put(value, 1);
-            	}else {
-            		values.put(value, values.get(value) + 1);
-            	}
-            }
-            System.out.println();
-            System.out.println(data.classAttribute().value(1));
-            fw.append("classnames:" + data.classAttribute().value(0) + "," + data.classAttribute().value(1) + "\n");
-            fw.append("classdist:" + values.get(data.classAttribute().value(0)) + "," + values.get(data.classAttribute().value(1)) + "\n");
-            fw.append("natt:" + data.numAttributes() + "\n");
-            
-            
-            fw.close();
-            
+            this.generateDatasetMetrics();
             
             
         }catch(Exception e) {
@@ -157,7 +118,7 @@ public class RuleGeneratorAlgorihtmJ48 extends RuleGeneratorAlgorihtm {
 			if (treeV[i].contains(":")) {				
 				System.out.println(rule + ", " + treeV[i]);
 				
-				// adicionar a rule na lista
+				// adiciona a rule na lista
 				addRuleToList(rule + ", " + treeV[i], ruleList, ruleMetrics, attNames);
 				
 				

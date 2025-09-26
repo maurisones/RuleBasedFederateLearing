@@ -16,7 +16,7 @@ public class RunCreateModel {
 
 		// define um modelo podendo ser ModelRuleMatchCount ou ModelRuleMatchWeighted
 		// tem que passar o dataset de teste no construtor 
-		Model model = new ModelRuleMatchCount("/home/mauri/Downloads/RulesTemp/breast-cancer-test.arff");
+		Model model = new ModelRuleMatchCount();
 		//Model model = new ModelRuleMatchWeighted("/home/mauri/Downloads/RulesTemp/breast-cancer-test.arff");
 		
 		// adiciona os arquivos gerados pelo classificador em cada um dos nós federados
@@ -48,9 +48,8 @@ public class RunCreateModel {
 		
 
 		// testando o modelo 
-		// TODO - retirar a necessidade de passar o ds de teste para o modelo, pode ser passado direto para o wrapper
         ArffLoader loader = new ArffLoader();
-		loader.setSource(new File(((ModelRuleMatchCount)model).getTestDataSetFileName()));		
+		loader.setSource(new File("/home/mauri/Downloads/RulesTemp/breast-cancer-test.arff"));		
         Instances testDataSet = loader.getDataSet(); 
 			
         // estabelece qual é a classe no dataset - só funciona se for a última 

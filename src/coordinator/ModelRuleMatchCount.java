@@ -13,10 +13,6 @@ import weka.core.converters.ArffLoader;
 
 public class ModelRuleMatchCount extends Model {	
 	
-	public ModelRuleMatchCount(String testDataSetFileName) {
-		super(testDataSetFileName);		
-	}
-
 	@Override
 	public boolean buildModel() {
 		// nothing to do - this model is only an append of rules
@@ -75,42 +71,6 @@ public class ModelRuleMatchCount extends Model {
 		return 1;
 	}
 
-	@Override
-	public List<String> classify() {
-		
-        try {
-            // Load dataset 
-            ArffLoader loader = new ArffLoader();
-			loader.setSource(new File(this.testDataSetFileName));
-			
-	        Instances testDataSet = loader.getDataSet(); 
-			
-			for (Instance instance: testDataSet) {
-				
-				
-				String[] stringArray = new String[instance.numAttributes()];
-		        for (int i = 0; i < instance.numAttributes(); i++) {
-		            stringArray[i] = instance.stringValue(i);	            
-		        }
-		        System.out.println(Arrays.toString(stringArray));
-		        
-				predclasses.add(this.classifyInstance(stringArray));
-				trueclasses.add(stringArray[stringArray.length -1]);
-				
-				
-			}
-			
-			System.out.println("Use of majority class: " + this.majority + "=" + this.nMajorityAttribution);
-		
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 
-		
-		return predclasses;
-	}
-
-	
-	
 	
 }

@@ -27,8 +27,6 @@ public abstract class Model {
 	List<String[]> rules = new ArrayList<>();
 	List<String[]> rulesMetrics = new ArrayList<>();
 	
-	protected String testDataSetFileName;
-	
 	
 	// results
 	protected List<String> predclasses = new ArrayList<String>();
@@ -37,27 +35,9 @@ public abstract class Model {
 	protected String majority = null;
 	
 	
-	public Model(String testDataSetFileName) {	
-		this.testDataSetFileName = testDataSetFileName;
+	public Model() {		
 	}
 	
-	
-	
-	
-	public String getTestDataSetFileName() {
-		return testDataSetFileName;
-	}
-
-
-
-
-	public void setTestDataSetFileName(String testDataSetFileName) {
-		this.testDataSetFileName = testDataSetFileName;
-	}
-
-
-
-
 	public String[] getClassnames() {
 		return classnames;
 	}
@@ -85,8 +65,6 @@ public abstract class Model {
 	public void setTrueclasses(List<String> trueclasses) {
 		this.trueclasses = trueclasses;
 	}
-
-
 
 
 	public boolean loadRules() {
@@ -174,9 +152,7 @@ public abstract class Model {
 	public abstract boolean buildModel();
 	
 	public abstract String classifyInstance(String[] instance);	
-	
-	public abstract List<String> classify();
-
+		
 	public void addDatasetMetricFile(String fileName) {		
 		this.datasetMetricFiles.add(fileName);
 	}
