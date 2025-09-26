@@ -130,7 +130,7 @@ public class RuleGeneratorAlgorihtmJ48 extends RuleGeneratorAlgorihtm {
             System.out.println();
             System.out.println(data.classAttribute().value(1));
             fw.append("classnames:" + data.classAttribute().value(0) + "," + data.classAttribute().value(1) + "\n");
-            fw.append("classdist:" + values.get(data.classAttribute().value(0)) + "," + values.get(data.classAttribute().value(0)) + "\n");
+            fw.append("classdist:" + values.get(data.classAttribute().value(0)) + "," + values.get(data.classAttribute().value(1)) + "\n");
             fw.append("natt:" + data.numAttributes() + "\n");
             
             
