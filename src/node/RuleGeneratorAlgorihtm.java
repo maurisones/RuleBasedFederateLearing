@@ -110,6 +110,7 @@ public abstract class RuleGeneratorAlgorihtm {
 
 	public boolean loadArffDataset() {
 		try {
+			System.out.println("zxxx " + this.trainDataSetFileName);
 			// Load dataset
 			ArffLoader loader = new ArffLoader();
 			loader.setSource(new File(this.trainDataSetFileName));
@@ -123,7 +124,7 @@ public abstract class RuleGeneratorAlgorihtm {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
+			return false; 
 		}
 		return true;
 	}

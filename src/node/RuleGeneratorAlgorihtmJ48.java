@@ -96,7 +96,7 @@ public class RuleGeneratorAlgorihtmJ48 extends RuleGeneratorAlgorihtm {
             }            
             fw.close();
             
-            this.generateDatasetMetrics();
+            generateDatasetMetrics();
             
             
         }catch(Exception e) {
@@ -137,7 +137,8 @@ public class RuleGeneratorAlgorihtmJ48 extends RuleGeneratorAlgorihtm {
 		String[] ruleVector = new String[attNames.size()];
 		Arrays.fill(ruleVector, "*");
 		
-		String rulem = rule.substring(rule.indexOf("(") + 1, rule.indexOf(")"));
+		String rulem = rule.split(":")[1];
+		rulem = rulem.substring(rulem.indexOf("(") + 1, rulem.indexOf(")"));
 		System.out.println("ruleMetric: " + rulem);
 
 		

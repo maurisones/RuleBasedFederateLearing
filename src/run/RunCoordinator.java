@@ -3,6 +3,7 @@ package run;
 import coordinator.ModelRuleMatchCount;
 import coordinator.ModelRuleMatchWeighted;
 import coordinator.WekaModelWrapper;
+import results.FormatResultsToGrep;
 import weka.core.Instances;
 import weka.core.converters.ArffLoader;
 
@@ -25,8 +26,9 @@ public class RunCoordinator {
 			System.exit(1);
 		}
 		
+		
 		// adiciona os dados dos nós
-		for (int i = 2; i < args.length; i++) {
+		for (int i = 4; i < args.length; i++) {
 			model.addDatasetMetricFile(args[i] + ".J48datasetmetrics");
 			model.addRuleFile(args[i] + ".J48rules");		
 			model.addRuleMetricFiles(args[i] + ".J48rulesmetrics");
@@ -61,6 +63,10 @@ public class RunCoordinator {
 		System.out.println(eval.toSummaryString("\nResults\n======\n", false));
         System.out.println(eval.toClassDetailsString("\nClass Details\n======\n"));
         System.out.println(eval.toMatrixString("\nConfusion Matrix\n======\n"));
+        
+        FormatResultsToGrep fmtr = new FormatResultsToGrep(eval,  args[3], args[2]);
+        System.out.println(fmtr.evalResultsToGrep());
+        
  
 
 	}
