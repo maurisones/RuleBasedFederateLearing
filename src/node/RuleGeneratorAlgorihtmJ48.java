@@ -134,6 +134,9 @@ public class RuleGeneratorAlgorihtmJ48 extends RuleGeneratorAlgorihtm {
 
 
 	private static void addRuleToList(String rule, List<String[]> ruleList, List<Float[]> ruleMetrics, List<String> attNames) {
+	
+		System.out.println("rule: " + rule);
+		
 		String[] ruleVector = new String[attNames.size()];
 		Arrays.fill(ruleVector, "*");
 		
@@ -146,10 +149,14 @@ public class RuleGeneratorAlgorihtmJ48 extends RuleGeneratorAlgorihtm {
 		rule = rule.substring(0, rule.indexOf("("));
 				
 		for (String rp: rule.split(",")) {
-			System.out.println(rp);
+			System.out.println("rp: " + rp);
 			if (rp.contains("=")) {
 				String rpatt= rp.split("=")[0];
 				String rpvalue = rp.split("=")[1];				
+				
+				System.out.println("rpatt: x" + rpatt);
+				System.out.println("rpvalue: x" + rpvalue);
+				
 				ruleVector[attNames.indexOf(rpatt)] = rpvalue;				
 			} else {
 				ruleVector[attNames.size() - 1] = rp;

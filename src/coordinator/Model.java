@@ -38,6 +38,14 @@ public abstract class Model {
 	public Model() {		
 	}
 	
+	
+	
+	public int getnMajorityAttribution() {
+		return nMajorityAttribution;
+	}
+
+
+
 	public String[] getClassnames() {
 		return classnames;
 	}

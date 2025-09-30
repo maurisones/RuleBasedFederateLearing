@@ -12,7 +12,7 @@ public class FormatResultsToGrep extends FormatResults{
 	public String evalResultsToGrep() {
 		String ret =  "";
 		for (String k: measuresMap.keySet()) {
-			ret += this.expId + ": " + this.datasetName + ": " +  k + ": " + measuresMap.get(k) + "\n"; 
+			ret += this.datasetName + ": " + this.expId + ": " +  k + ": " + measuresMap.get(k) + "\n"; 
 		}
 		return ret;
 	}
