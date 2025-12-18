@@ -75,7 +75,7 @@ public abstract class Model {
 	}
 
 
-        public List<String[]> getRules(){
+    public List<String[]> getRules(){
 		return this.rules;
 	}
 	

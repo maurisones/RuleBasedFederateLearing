@@ -2,9 +2,9 @@ package node;
 
 public class RuleGenerator {
 	
-	private RuleGeneratorAlgorihtm ruleGeneratorAlgorithm;
+	private RuleGeneratorAlgorithm ruleGeneratorAlgorithm;
 	
-	public RuleGenerator(RuleGeneratorAlgorihtm ruleGeneratorAlgorithm) {
+	public RuleGenerator(RuleGeneratorAlgorithm ruleGeneratorAlgorithm) {
 		this.ruleGeneratorAlgorithm = ruleGeneratorAlgorithm;
 	}
 

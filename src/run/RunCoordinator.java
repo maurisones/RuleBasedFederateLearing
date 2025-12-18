@@ -35,13 +35,17 @@ public class RunCoordinator {
 			System.exit(1);
 		}
 		
+		// Files rules suffix
+		String algoid = args[3].split("-")[args[3].split("-").length -1];
+		
+		System.out.println("Suffix=" + algoid);
+		
 		
 		// adiciona os dados dos nós
 		for (int i = 4; i < args.length; i++) {
-			model.addDatasetMetricFile(args[i] + ".J48datasetmetrics");
-			model.addRuleFile(args[i] + ".J48rules");		
-			model.addRuleMetricFiles(args[i] + ".J48rulesmetrics");
-
+			model.addDatasetMetricFile(args[i] + "." + algoid + "datasetmetrics");
+			model.addRuleFile(args[i] + "." + algoid + "rules");		
+			model.addRuleMetricFiles(args[i] + "." + algoid + "rulesmetrics");
 		}
 		
 		// métodos para que o modelo carregue os dados de cada nó e crie o modelo centralizado
