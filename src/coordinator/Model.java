@@ -75,6 +75,14 @@ public abstract class Model {
 	}
 
 
+        public List<String[]> getRules(){
+		return this.rules;
+	}
+	
+	public List<String[]> getRulesMetrics(){
+		return this.rulesMetrics;
+	}
+
 	public boolean loadRules() {
 		for (int i = 0; i < ruleFiles.size(); i++) {
 		
