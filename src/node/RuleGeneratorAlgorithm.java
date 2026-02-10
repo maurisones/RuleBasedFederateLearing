@@ -9,7 +9,7 @@ import weka.core.AttributeStats;
 import weka.core.Instances;
 import weka.core.converters.ArffLoader;
 
-public abstract class RuleGeneratorAlgorihtm {
+public abstract class RuleGeneratorAlgorithm {
 
 	protected String trainDataSetFileName;
 	protected String outputPrefixFileName;
@@ -19,7 +19,7 @@ public abstract class RuleGeneratorAlgorihtm {
 	protected String datasetMetricFileExtension = "J48datasetmetrics";
 	protected Instances data;
 
-	public RuleGeneratorAlgorihtm(String trainDataSetFileName, String outputFileName) {
+	public RuleGeneratorAlgorithm(String trainDataSetFileName, String outputFileName) {
 		this.trainDataSetFileName = trainDataSetFileName;
 		this.outputPrefixFileName = outputFileName;
 	}

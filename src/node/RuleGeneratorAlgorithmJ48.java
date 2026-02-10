@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Map;
 
 
-public class RuleGeneratorAlgorihtmJ48 extends RuleGeneratorAlgorihtm {
+public class RuleGeneratorAlgorithmJ48 extends RuleGeneratorAlgorithm {
 
 	private boolean unpruned = false;	
 	
-	public RuleGeneratorAlgorihtmJ48(String datasetFileName, String outputFileName, boolean unpruned) {
+	public RuleGeneratorAlgorithmJ48(String datasetFileName, String outputFileName, boolean unpruned) {
 		super(datasetFileName, outputFileName);
 		this.unpruned = unpruned;
 	}
@@ -46,11 +46,11 @@ public class RuleGeneratorAlgorihtmJ48 extends RuleGeneratorAlgorihtm {
 			this.loadArffDataset();
  
             // Build the decision tree classifier 
-            J48 tree = new J48(); 
+            J48 algo = new J48(); 
             
-            tree.setUnpruned(unpruned);
+            algo.setUnpruned(unpruned);
             
-            tree.buildClassifier(data);   
+            algo.buildClassifier(data);   
             
                    
             // produce a list with attnames
@@ -59,11 +59,11 @@ public class RuleGeneratorAlgorihtmJ48 extends RuleGeneratorAlgorihtm {
             	attNames.add(data.attribute(i).name());
             }
             
-            System.out.println("Unpruned: " + tree.getUnpruned());
+            System.out.println("Unpruned: " + algo.getUnpruned());
             System.out.println(attNames.toString());           
-            System.out.println(tree.toString());  
+            System.out.println(algo.toString());  
             
-            String treeV[] = tree.toString().replaceAll(" ", "").split("\\n");
+            String treeV[] = algo.toString().replaceAll(" ", "").split("\\n");
             System.out.println(Arrays.toString(treeV));
             
             
