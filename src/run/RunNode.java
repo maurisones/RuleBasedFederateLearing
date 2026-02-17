@@ -28,13 +28,14 @@ public class RunNode {
 		ruleAlgo2.setRuleMetricFileExtension("DTrulesmetrics");
     	ruleAlgo2.generateRules();
     	
-    	/*
+    	
 		RuleGeneratorAlgorithm ruleAlgo3 = new RuleGeneratorPART(
     			args[0],
     			args[1]);    	
-		ruleAlgo3.setDatasetMetricFileExtension("DTdatasetmetrics");
+		ruleAlgo3.setDatasetMetricFileExtension("PARTdatasetmetrics");
+		ruleAlgo3.setRuleFileExtension("PARTrules");
+		ruleAlgo3.setRuleMetricFileExtension("PARTrulesmetrics");
     	ruleAlgo3.generateRules();
-    	*/
 
 	}
 
