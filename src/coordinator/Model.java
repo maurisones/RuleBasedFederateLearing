@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import weka.core.Instances;
-
 public abstract class Model {
 
 	protected List<String> ruleFiles = new LinkedList<>();
@@ -156,6 +154,7 @@ public abstract class Model {
 					return line.split(":")[1];
 				}
 			}
+			br.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();

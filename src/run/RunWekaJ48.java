@@ -1,8 +1,6 @@
 package run;
 
-import coordinator.ModelRuleMatchCount;
-import coordinator.ModelRuleMatchWeighted;
-import coordinator.WekaModelWrapper;
+
 import results.FormatResultsToGrep;
 import weka.classifiers.trees.J48;
 import weka.core.Instances;
@@ -10,7 +8,6 @@ import weka.core.converters.ArffLoader;
 
 import java.io.File;
 
-import coordinator.Model;
 
 public class RunWekaJ48 {
 

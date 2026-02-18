@@ -1,15 +1,7 @@
 package coordinator;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.converters.ArffLoader;
 
 public class ModelRuleMatchCount extends Model {	
 	

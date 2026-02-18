@@ -1,7 +1,6 @@
 package node;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,9 +10,8 @@ import weka.classifiers.rules.DecisionTable;
 
 public class RuleGeneratorDecisionTable extends RuleGeneratorAlgorithm {
 
-	public RuleGeneratorDecisionTable(String trainDataSetFileName, String outputFileName) {
-		super(trainDataSetFileName, outputFileName);
-		// TODO Auto-generated constructor stub
+	public RuleGeneratorDecisionTable(String trainDataSetFileName) {
+		super(trainDataSetFileName);		
 	}
 
 	@Override
@@ -27,7 +25,9 @@ public class RuleGeneratorDecisionTable extends RuleGeneratorAlgorithm {
             algo.setDisplayRules(true);
             algo.buildClassifier(data);
             
-            System.out.println(algo.toString());
+            
+            System.out.println("************* Weka algo output *************");
+            System.out.println(algo.toString());  
                   
             // produce a list with attnames
             List<String> attNames = new LinkedList<String>();
@@ -38,7 +38,7 @@ public class RuleGeneratorDecisionTable extends RuleGeneratorAlgorithm {
            
             String algoStr = algo.toString().split("===\\n")[2];
             algoStr = algoStr.split("===")[0];
-            System.out.println(algoStr);
+            //System.out.println(algoStr);
             
             String usedAtts = algo.toString().split("Feature set: ")[1];
             usedAtts = usedAtts.split("\\n")[0];
@@ -47,41 +47,19 @@ public class RuleGeneratorDecisionTable extends RuleGeneratorAlgorithm {
             	.mapToInt(Integer::parseInt) // Convert each string to an int
             	.toArray();
                         
-            System.out.println(Arrays.toString(usedAttsi));
+            //System.out.println(Arrays.toString(usedAttsi));
             
-            
-            
-            List<String[]> ruleList = new LinkedList<String[]>();
-            List<Float[]> ruleMetrics = new LinkedList<Float[]>();
-            
+            ruleList = new ArrayList<String[]>();
+            ruleMetrics = new ArrayList<Float[]>();                        
             
             processTable(algoStr, attNames, ruleList, ruleMetrics, usedAttsi);
             
-            for (String rr[]: ruleList)
-            	System.out.println(Arrays.toString(rr));
-            
-            for (Float rr[]: ruleMetrics)
-            	System.out.println(Arrays.toString(rr));
-            
-            
-            // write a file rules
-            FileWriter fw = new FileWriter(new File(this.outputPrefixFileName + "." + this.ruleFileExtension));
-            for (String rr[]: ruleList) {
-            	fw.append(Arrays.toString(rr).replaceAll("\\[", "").replaceAll("\\]", "").replace(" ", ""));
-            	fw.append("\n");
-            }
-            
-            fw.close();
-            
-            // write a file metrics
-            fw = new FileWriter(new File(this.outputPrefixFileName + "." + this.ruleMetricFileExtension));
-            for (Float rr[]: ruleMetrics) {
-            	fw.append(Arrays.toString(rr).replaceAll(" ", "").replaceAll("\\[", "").replaceAll("\\]", ""));
-            	fw.append("\n");
-            }            
-            fw.close();
+            showRulesWithMetrics();
             
             generateDatasetMetrics();
+
+            System.out.println("************* Dataset metrics *************");
+            System.out.println(this.datasetMetrics.toString());
             
             
         }catch(Exception e) {

@@ -1,8 +1,6 @@
 package node;
 
-
-import java.io.File;
-import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,8 +9,7 @@ import weka.classifiers.rules.PART;
 public class RuleGeneratorPART extends RuleGeneratorAlgorithm {
 
 	public RuleGeneratorPART(String trainDataSetFileName, String outputFileName) {
-		super(trainDataSetFileName, outputFileName);
-		// TODO Auto-generated constructor stub
+		super(trainDataSetFileName);
 	}
 
 	@Override
@@ -26,7 +23,7 @@ public class RuleGeneratorPART extends RuleGeneratorAlgorithm {
             algo.buildClassifier(data);
             
             
-            
+            System.out.println("************* Weka algo output *************");
             System.out.println(algo.toString());
               
             // produce a list with attnames
@@ -39,38 +36,18 @@ public class RuleGeneratorPART extends RuleGeneratorAlgorithm {
             String algoStr = algo.toString().split("---\\n")[1];           
             System.out.println(algoStr);
             
-               
-            List<String[]> ruleList = new LinkedList<String[]>();
-            List<Float[]> ruleMetrics = new LinkedList<Float[]>();
-            
+            ruleList = new ArrayList<String[]>();
+            ruleMetrics = new ArrayList<Float[]>();
+                        
             
             processRules(algoStr, attNames, ruleList, ruleMetrics);
-            
-            for (String rr[]: ruleList)
-            	System.out.println(Arrays.toString(rr));
-            
-            for (Float rr[]: ruleMetrics)
-            	System.out.println(Arrays.toString(rr));
-            
-            
-            // write a file rules
-            FileWriter fw = new FileWriter(new File(this.outputPrefixFileName + "." + this.ruleFileExtension));
-            for (String rr[]: ruleList) {
-            	fw.append(Arrays.toString(rr).replaceAll("\\[", "").replaceAll("\\]", "").replace(" ", ""));
-            	fw.append("\n");
-            }
-            
-            fw.close();
-            
-            // write a file metrics
-            fw = new FileWriter(new File(this.outputPrefixFileName + "." + this.ruleMetricFileExtension));
-            for (Float rr[]: ruleMetrics) {
-            	fw.append(Arrays.toString(rr).replaceAll(" ", "").replaceAll("\\[", "").replaceAll("\\]", ""));
-            	fw.append("\n");
-            }            
-            fw.close();
+                    
+            showRulesWithMetrics();
             
             generateDatasetMetrics();
+
+            System.out.println("************* Dataset metrics *************");
+            System.out.println(this.datasetMetrics.toString());
             
             
         }catch(Exception e) {
