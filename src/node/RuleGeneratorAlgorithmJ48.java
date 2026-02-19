@@ -1,27 +1,20 @@
 package node;
 
 import weka.classifiers.trees.J48;
-import weka.core.Attribute;
-import weka.core.AttributeStats;
-import weka.core.Instances;
-import weka.core.converters.ArffLoader;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+
 
 
 public class RuleGeneratorAlgorithmJ48 extends RuleGeneratorAlgorithm {
 
 	private boolean unpruned = false;	
 	
-	public RuleGeneratorAlgorithmJ48(String datasetFileName, String outputFileName, boolean unpruned) {
-		super(datasetFileName, outputFileName);
+	public RuleGeneratorAlgorithmJ48(String datasetFileName, boolean unpruned) {
+		super(datasetFileName);
 		this.unpruned = unpruned;
 	}
 
@@ -60,44 +53,23 @@ public class RuleGeneratorAlgorithmJ48 extends RuleGeneratorAlgorithm {
             }
             
             System.out.println("Unpruned: " + algo.getUnpruned());
-            System.out.println(attNames.toString());           
+            
+            System.out.println("************* Weka algo output *************");
             System.out.println(algo.toString());  
             
             String treeV[] = algo.toString().replaceAll(" ", "").split("\\n");
-            System.out.println(Arrays.toString(treeV));
+                        
+            ruleList = new ArrayList<String[]>();
+            ruleMetrics = new ArrayList<Float[]>();
+                        
+            processTree(treeV, 3, "", attNames, ruleList, ruleMetrics);            
             
-            
-            List<String[]> ruleList = new LinkedList<String[]>();
-            List<Float[]> ruleMetrics = new LinkedList<Float[]>();
-            
-            processTree(treeV, 3, "", attNames, ruleList, ruleMetrics);
-            
-            for (String rr[]: ruleList)
-            	System.out.println(Arrays.toString(rr));
-            
-            for (Float rr[]: ruleMetrics)
-            	System.out.println(Arrays.toString(rr));
-            
-            
-            // write a file rules
-            FileWriter fw = new FileWriter(new File(this.outputPrefixFileName + "." + this.ruleFileExtension));
-            for (String rr[]: ruleList) {
-            	fw.append(Arrays.toString(rr).replaceAll("\\[", "").replaceAll("\\]", "").replace(" ", ""));
-            	fw.append("\n");
-            }
-            
-            fw.close();
-            
-            // write a file metrics
-            fw = new FileWriter(new File(this.outputPrefixFileName + "." + this.ruleMetricFileExtension));
-            for (Float rr[]: ruleMetrics) {
-            	fw.append(Arrays.toString(rr).replaceAll(" ", "").replaceAll("\\[", "").replaceAll("\\]", ""));
-            	fw.append("\n");
-            }            
-            fw.close();
+            showRulesWithMetrics();
             
             generateDatasetMetrics();
-            
+
+            System.out.println("************* Dataset metrics *************");
+            System.out.println(this.datasetMetrics.toString());
             
         }catch(Exception e) {
         	e.printStackTrace();
@@ -116,7 +88,7 @@ public class RuleGeneratorAlgorithmJ48 extends RuleGeneratorAlgorithm {
 			}
 			
 			if (treeV[i].contains(":")) {				
-				System.out.println(rule + ", " + treeV[i]);
+				//System.out.println(rule + ", " + treeV[i]);
 				
 				// adiciona a rule na lista
 				addRuleToList(rule + ", " + treeV[i], ruleList, ruleMetrics, attNames);
@@ -135,27 +107,27 @@ public class RuleGeneratorAlgorithmJ48 extends RuleGeneratorAlgorithm {
 
 	private static void addRuleToList(String rule, List<String[]> ruleList, List<Float[]> ruleMetrics, List<String> attNames) {
 	
-		System.out.println("rule: " + rule);
+		//System.out.println("rule: " + rule);
 		
 		String[] ruleVector = new String[attNames.size()];
 		Arrays.fill(ruleVector, "*");
 		
 		String rulem = rule.split(":")[1];
 		rulem = rulem.substring(rulem.indexOf("(") + 1, rulem.indexOf(")"));
-		System.out.println("ruleMetric: " + rulem);
+		//System.out.println("ruleMetric: " + rulem);
 
 		
 		rule = rule.replaceAll("\\|","").replaceAll(":", ",").replace(" ", "");		
 		rule = rule.substring(0, rule.indexOf("("));
 				
 		for (String rp: rule.split(",")) {
-			System.out.println("rp: " + rp);
+			//System.out.println("rp: " + rp);
 			if (rp.contains("=")) {
 				String rpatt= rp.split("=")[0];
 				String rpvalue = rp.split("=")[1];				
 				
-				System.out.println("rpatt: x" + rpatt);
-				System.out.println("rpvalue: x" + rpvalue);
+				//System.out.println("rpatt: x" + rpatt);
+				//System.out.println("rpvalue: x" + rpvalue);
 				
 				ruleVector[attNames.indexOf(rpatt)] = rpvalue;				
 			} else {

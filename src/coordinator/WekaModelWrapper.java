@@ -1,7 +1,5 @@
 package coordinator;
 
-import java.util.Arrays;
-
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instance;
 import weka.core.Instances;

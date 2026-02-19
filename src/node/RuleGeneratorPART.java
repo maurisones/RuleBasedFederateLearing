@@ -1,13 +1,15 @@
 package node;
 
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import weka.classifiers.rules.PART;
 
 public class RuleGeneratorPART extends RuleGeneratorAlgorithm {
 
 	public RuleGeneratorPART(String trainDataSetFileName, String outputFileName) {
-		super(trainDataSetFileName, outputFileName);
-		// TODO Auto-generated constructor stub
+		super(trainDataSetFileName);
 	}
 
 	@Override
@@ -17,62 +19,35 @@ public class RuleGeneratorPART extends RuleGeneratorAlgorithm {
 			this.loadArffDataset();
  
             // Build the DecisionTable classifier 
-            PART algo = new PART();
-            //algo.setDisplayRules(true);
+            PART algo = new PART();                        
             algo.buildClassifier(data);
             
+            
+            System.out.println("************* Weka algo output *************");
             System.out.println(algo.toString());
-            
-            // TODO: implement the rule extraction from de algorithm output
-            
-            /*
-            table.
-            
-                   
+              
             // produce a list with attnames
             List<String> attNames = new LinkedList<String>();
             for (int i = 0; i < data.numAttributes(); i++) {
             	attNames.add(data.attribute(i).name());
             }
             
-            System.out.println("Unpruned: " + tree.getUnpruned());
-            System.out.println(attNames.toString());           
-            System.out.println(tree.toString());  
             
-            String treeV[] = tree.toString().replaceAll(" ", "").split("\\n");
-            System.out.println(Arrays.toString(treeV));
+            String algoStr = algo.toString().split("---\\n")[1];           
+            System.out.println(algoStr);
             
+            ruleList = new ArrayList<String[]>();
+            ruleMetrics = new ArrayList<Float[]>();
+                        
             
-            List<String[]> ruleList = new LinkedList<String[]>();
-            List<Float[]> ruleMetrics = new LinkedList<Float[]>();
+            processRules(algoStr, attNames, ruleList, ruleMetrics);
+                    
+            showRulesWithMetrics();
             
-            processTree(treeV, 3, "", attNames, ruleList, ruleMetrics);
-            
-            for (String rr[]: ruleList)
-            	System.out.println(Arrays.toString(rr));
-            
-            for (Float rr[]: ruleMetrics)
-            	System.out.println(Arrays.toString(rr));
-            
-            
-            // write a file rules
-            FileWriter fw = new FileWriter(new File(this.outputPrefixFileName + "." + this.ruleFileExtension));
-            for (String rr[]: ruleList) {
-            	fw.append(Arrays.toString(rr).replaceAll("\\[", "").replaceAll("\\]", "").replace(" ", ""));
-            	fw.append("\n");
-            }
-            
-            fw.close();
-            
-            // write a file metrics
-            fw = new FileWriter(new File(this.outputPrefixFileName + "." + this.ruleMetricFileExtension));
-            for (Float rr[]: ruleMetrics) {
-            	fw.append(Arrays.toString(rr).replaceAll(" ", "").replaceAll("\\[", "").replaceAll("\\]", ""));
-            	fw.append("\n");
-            }            
-            fw.close();
-            */
             generateDatasetMetrics();
+
+            System.out.println("************* Dataset metrics *************");
+            System.out.println(this.datasetMetrics.toString());
             
             
         }catch(Exception e) {
@@ -81,6 +56,65 @@ public class RuleGeneratorPART extends RuleGeneratorAlgorithm {
         }		
 		
 		return true;		
+	}
+	
+	private static void processRules(String dtstr, List<String> attNames, 
+			List<String[]> ruleList, List<Float[]> ruleMetrics
+			) {
+		
+			String lines[] = dtstr.split("\\n\\n");
+			System.out.println("*** " + Arrays.toString(lines));
+			
+			for (String line: lines) {
+				System.out.println("line: " + line);
+				if (line.trim().startsWith(":")) {
+					break;
+				}
+				
+				System.out.println("=====");
+				
+				// cria uma regra com *		
+				String[] ruleVector = new String[attNames.size()];
+				Arrays.fill(ruleVector, "*");
+				
+				String antecedente = line.replace("\n", " ").split(":")[0];				
+				System.out.println("Antecedente: " + antecedente);
+				String[] attValuePairs = antecedente.split("AND");
+				for (String pair : attValuePairs) {
+					String attname = pair.split("=")[0].trim();
+					String attvalue = pair.split("=")[1].trim();
+					
+					ruleVector[attNames.indexOf(attname)] = attvalue;
+				
+				}
+				
+				
+				String consequente = line.split(":")[1];
+				System.out.println("Consequente: " + consequente);
+				
+				String classname = consequente.split("\\(")[0].trim();
+				String rulemet = consequente.split("\\(")[1].replace(")", "");
+				
+				System.out.println("classname: " + classname);
+				System.out.println("rulemet: " + rulemet);
+
+				ruleVector[ruleVector.length -1] = classname;
+				
+				System.out.println(Arrays.toString(ruleVector));
+				
+				ruleList.add(ruleVector);
+
+				
+				Float metrics[] = {0f,0f};
+				String rulemv[] = rulemet.split("\\/");
+				metrics[0] = Float.valueOf(rulemv[0]);
+				if (rulemv.length > 1) {
+					metrics[1] = Float.valueOf(rulemv[1]);
+				}
+				ruleMetrics.add(metrics);
+				
+			}
+		
 	}
 
 }

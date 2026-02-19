@@ -2,7 +2,11 @@ package node;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import weka.core.AttributeStats;
@@ -11,17 +15,15 @@ import weka.core.converters.ArffLoader;
 
 public abstract class RuleGeneratorAlgorithm {
 
-	protected String trainDataSetFileName;
-	protected String outputPrefixFileName;
-	protected int classIndex = -1; // -1 means the last column of the dataset
-	protected String ruleFileExtension = "J48rules";
-	protected String ruleMetricFileExtension = "J48rulesmetrics";
-	protected String datasetMetricFileExtension = "J48datasetmetrics";
+	protected String trainDataSetFileName;	
+	protected int classIndex = -1; // -1 means the last column of the dataset	
 	protected Instances data;
+	protected List<String[]> ruleList;
+	protected List<Float[]> ruleMetrics;
+	protected List<String> datasetMetrics;
 
-	public RuleGeneratorAlgorithm(String trainDataSetFileName, String outputFileName) {
+	public RuleGeneratorAlgorithm(String trainDataSetFileName) {
 		this.trainDataSetFileName = trainDataSetFileName;
-		this.outputPrefixFileName = outputFileName;
 	}
 
 	public int getClassIndex() {
@@ -32,30 +34,6 @@ public abstract class RuleGeneratorAlgorithm {
 		this.classIndex = classIndex;
 	}
 
-	public String getRuleFileExtension() {
-		return ruleFileExtension;
-	}
-
-	public void setRuleFileExtension(String ruleFileExtension) {
-		this.ruleFileExtension = ruleFileExtension;
-	}
-
-	public String getRuleMetricFileExtension() {
-		return ruleMetricFileExtension;
-	}
-
-	public void setRuleMetricFileExtension(String ruleMetricFileExtension) {
-		this.ruleMetricFileExtension = ruleMetricFileExtension;
-	}
-
-	public String getDatasetMetricFileExtension() {
-		return datasetMetricFileExtension;
-	}
-
-	public void setDatasetMetricFileExtension(String datasetMetricFileExtension) {
-		this.datasetMetricFileExtension = datasetMetricFileExtension;
-	}
-
 	public String getDatasetFileName() {
 		return trainDataSetFileName;
 	}
@@ -64,53 +42,33 @@ public abstract class RuleGeneratorAlgorithm {
 		this.trainDataSetFileName = datasetFileName;
 	}
 
-	public String getOutputPrefixFileName() {
-		return outputPrefixFileName;
-	}
+	public void generateDatasetMetrics() {
+		datasetMetrics = new LinkedList<String>();
+		
+		AttributeStats classStats = data.attributeStats(data.classIndex());
+		datasetMetrics.add("nsamples:" + classStats.intCount);
+		datasetMetrics.add("nclasses:" + classStats.distinctCount);
 
-	public void setOutputPrefixFileName(String outputPrefixFileName) {
-		this.outputPrefixFileName = outputPrefixFileName;
-	}
-
-	public boolean generateDatasetMetrics() {
-		// datasetMetrics
-		try {
-			FileWriter fw = new FileWriter(new File(this.outputPrefixFileName + "." + this.datasetMetricFileExtension));
-			AttributeStats classStats = data.attributeStats(data.classIndex());
-			fw.append("nsamples:" + classStats.intCount + "\n");
-			fw.append("nclasses:" + classStats.distinctCount + "\n");
-
-			// class distribution
-			Map<String, Integer> values = new HashMap<>();
-			for (int i = 0; i < classStats.intCount; i++) {
-				String value = data.instance(i).stringValue(data.classIndex());
-				if (!values.containsKey(value)) {
-					values.put(value, 1);
-				} else {
-					values.put(value, values.get(value) + 1);
-				}
+		// class distribution
+		Map<String, Integer> values = new HashMap<>();
+		for (int i = 0; i < classStats.intCount; i++) {
+			String value = data.instance(i).stringValue(data.classIndex());
+			if (!values.containsKey(value)) {
+				values.put(value, 1);
+			} else {
+				values.put(value, values.get(value) + 1);
 			}
-			System.out.println();
-			System.out.println(data.classAttribute().value(1));
-			fw.append("classnames:" + data.classAttribute().value(0) + "," + data.classAttribute().value(1) + "\n");
-			fw.append("classdist:" + values.get(data.classAttribute().value(0)) + ","
-					+ values.get(data.classAttribute().value(1)) + "\n");
-			fw.append("natt:" + data.numAttributes() + "\n");
-
-			fw.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
 		}
-
-		return true;
+		
+		datasetMetrics.add("classnames:" + data.classAttribute().value(0) + "," + data.classAttribute().value(1));
+		datasetMetrics.add("classdist:" + values.get(data.classAttribute().value(0)) + ","
+					+ values.get(data.classAttribute().value(1)));
+		datasetMetrics.add("natt:" + data.numAttributes());
 
 	}
 
 	public boolean loadArffDataset() {
-		try {
-			System.out.println("zxxx " + this.trainDataSetFileName);
+		try {			
 			// Load dataset
 			ArffLoader loader = new ArffLoader();
 			loader.setSource(new File(this.trainDataSetFileName));
@@ -129,6 +87,75 @@ public abstract class RuleGeneratorAlgorithm {
 		return true;
 	}
 
+	public List<String> getRules(){
+		
+		List<String> ruleStrs = new LinkedList<String>();
+		
+		 for (String rr[]: ruleList) {
+         	ruleStrs.add(Arrays.toString(rr).replaceAll("\\[", "").replaceAll("\\]", "").replace(" ", ""));
+         }
+		 
+		 return ruleStrs;
+	}
+	
+	public List<String> getRulesWithMetrics(){
+		
+		List<String> ruleStrs = this.getRules();
+		for (int i = 0; i < ruleStrs.size(); i++) {
+			String rule = ruleStrs.get(i);
+			rule = rule + "," + Arrays.toString(ruleMetrics.get(i)).replaceAll(" ", "").replaceAll("\\[", "").replaceAll("\\]", "");
+			ruleStrs.set(i, rule);
+		}
+		
+		return ruleStrs;
+	}
+	
+	public List<String> getDatasetMetrics(){		
+		return datasetMetrics;
+	}
+	
+	public void writeRulesAndMetricsToFile(String ruleFileName, String ruleMetricFileName,
+			String datasetMetricFileName) {
+	
+		// write a file rules
+        FileWriter fw;
+		try {
+			fw = new FileWriter(new File(ruleFileName));
+	
+	        for (String rr[]: ruleList) {
+	        	fw.append(Arrays.toString(rr).replaceAll("\\[", "").replaceAll("\\]", "").replace(" ", ""));
+	        	fw.append("\n");
+	        }        
+	        fw.close();
+	        
+	        // write a file metrics
+	        fw = new FileWriter(new File(ruleMetricFileName));
+	        for (Float rr[]: ruleMetrics) {
+	        	fw.append(Arrays.toString(rr).replaceAll(" ", "").replaceAll("\\[", "").replaceAll("\\]", ""));
+	        	fw.append("\n");
+	        }            
+	        fw.close();
+	        
+	        // write a dataset metrics
+	        fw = new FileWriter(new File(datasetMetricFileName));
+	        for (String s: datasetMetrics) {
+	        	fw.append(s + "\n");	        	
+	        }            
+	        fw.close();
+	        
+		} catch (IOException e) {
+			System.out.println("Error writing files.");
+			e.printStackTrace();
+		}
+	}
+	
+	public void showRulesWithMetrics() {
+		System.out.println("************* Rules with metrics *************");
+		for (String s: getRulesWithMetrics()) {
+			System.out.println(s);
+		}        
+	}
+	
 	public abstract boolean generateRules();
 
 }
